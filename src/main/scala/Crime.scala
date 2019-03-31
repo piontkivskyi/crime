@@ -29,6 +29,6 @@ object Crime extends App {
       case None => throw new Exception("Something went wrong")
     }
 
-    result.take(1).foreach(item => println(s"${item._1} : ${item._2.length} \n Threfs: \n ${item._2.map(crime => s"${crime.crimeType} \n")}"))
+    result.foreach(item => println(s"${item._1} : ${item._2.length} \n Threfs: \n ${item._2.map(crime => s"${crime.crimeType} \n")}"))
   }
 }
