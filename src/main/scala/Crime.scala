@@ -1,5 +1,6 @@
 package crime
 
+import services.CrimesAggregationService
 import services.CsvParser.parse
 import utils.{CommandLineArgsParser, IOUtils}
 import validators.ArgsValidator
@@ -21,14 +22,18 @@ object Crime extends App {
     }
 
     val result = parsedArgs.find(_._1 == "-d").map(_._2) match {
-      case Some(path) => IOUtils.getFilesListFromDirectory(path)
-        .flatMap(parse)
-        .filter(_.crimeId.nonEmpty)
-        .groupBy(_.location)
-        .toList.sortBy(_._2.length)(Ordering[Int].reverse).take(5)
+      case Some(path) => CrimesAggregationService.aggregate(
+          IOUtils.getFilesListFromDirectory(path).flatMap(parse)
+        )
+
       case None => throw new Exception("Something went wrong")
     }
 
-    result.foreach(item => println(s"${item._1} : ${item._2.length} \n Threfs: \n ${item._2.map(crime => s"${crime.crimeType} \n")}"))
+    result.foreach(item => {
+      println(s"${item._1} : ${item._2.length}")
+      println("Thefts:")
+      item._2.filter(_.crimeType.contains("Theft")).foreach(crime => println(crime.crimeType))
+      println("--------------------")
+    })
   }
 }
