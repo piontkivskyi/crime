@@ -16,6 +16,6 @@ object CommandLineArgsParser {
     args.iterator
       .sliding(2, 2)
       .withPartial(false).toList
-      .map(_ match { case List(a, b) => (a,b) })
+      .map { case List(a, b) => (a,b) }
   }
 }
